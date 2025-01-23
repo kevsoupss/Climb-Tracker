@@ -14,8 +14,8 @@ const ClimbCard = ({
     onStar, 
     onDelete}) => {
   return (
-    <div className="border rounded p-4 bg-white hover:showdow-xl transition-all ease-in-out">
-        <div className="flex items-center justify-between">
+    <div className="border rounded p-4 bg-white hover:showdow-xl transition-all ease-in-out ">
+        <div className="flex items-center justify-between ">
             <div>
                 <h6 className="text-sl font-medium">{vlevel} - {title}</h6>
                 
