@@ -6,6 +6,7 @@ const mongoose = require("mongoose")
 mongoose.connect(config.connectionString)
 
 const User = require("./models/user.model")
+const Climb = require("./models/climb.model")
 
 const express = require("express")
 const cors = require("cors")
@@ -113,6 +114,52 @@ app.post("/login", async (req, res) => {
 
 })
 
+app.post("/add-climb", authenticateToken, async (req, res) => {
+    const { title, desc, link, vlevel} = req.body
+    const { user } = req.user
+
+    if(!title) {
+        return res.status(400).json({error: true, message: "Title is required"})
+    }
+
+    if(!desc) {
+        return res.status(400).json({error: true, message: "Description is required"})
+    }
+
+    if(!link) {
+        return res.status(400).json({error: true, message: "Link is required"})
+    }
+
+    if(!vlevel) {
+        return res.status(400).json({error: true, message: "V level is required"})
+    }
+
+    try {
+        const climb = new Climb({
+            title,
+            desc,
+            link,
+            vlevel,
+            userId: user._id,
+
+        })
+        await climb.save()
+
+        return res.json({
+            error: false,
+            climb,
+            message: "Climb added successfully"
+        })
+
+    } catch( error) {
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Error"
+        })
+    }
+
+    
+})
 app.listen(8000)
 
 module.exports = app
