@@ -160,6 +160,45 @@ app.post("/add-climb", authenticateToken, async (req, res) => {
 
     
 })
+
+app.put("/edit-climb/:climbId", authenticateToken, async (req, res) => {
+    const climbId = req.params.climbId
+    const { title, desc, link, vlevel, isStarred} = req.body
+    const { user } = req.user
+    
+    if(!title && !desc && !link && !vlevel) {
+        return res.status(400).json({error: true, message:"No changes provided"})
+    }
+
+    try {
+        const climb = await Climb.findOne({_id: climbId, userId : user._id})
+        if (!climb) {
+            return res.status(404).json({error: true, message: "Climb not found"})
+        }
+        if (title) climb.title = title
+        if (desc) climb.desc = desc
+        if (link) climb.link = link
+        if (vlevel) climb.vlevel = vlevel
+
+        await climb.save()
+
+        return res.json({
+            error: false,
+            climb,
+            message:"Climb updated successfully"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Error"
+        })
+    }
+
+    
+
+
+})
+
 app.listen(8000)
 
 module.exports = app
