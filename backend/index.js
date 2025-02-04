@@ -114,6 +114,7 @@ app.post("/login", async (req, res) => {
 
 })
 
+// Add Climbs
 app.post("/add-climb", authenticateToken, async (req, res) => {
     const { title, desc, link, vlevel} = req.body
     const { user } = req.user
@@ -161,6 +162,7 @@ app.post("/add-climb", authenticateToken, async (req, res) => {
     
 })
 
+// Edit Climb
 app.put("/edit-climb/:climbId", authenticateToken, async (req, res) => {
     const climbId = req.params.climbId
     const { title, desc, link, vlevel, isStarred} = req.body
@@ -195,6 +197,54 @@ app.put("/edit-climb/:climbId", authenticateToken, async (req, res) => {
     }
 
     
+
+
+})
+
+// Get All Climbs
+app.get("/get-all-climbs", authenticateToken, async (req, res) => {
+    const { user } = req.user
+
+    try {
+        const climb = await Climb.find({ userId: user._id}).sort({isStarred: -1})
+
+        return res.json({
+            error:false,
+            climb,
+            message: "All climbs retrieved"
+        })
+    } catch( error) {
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Issue"
+        })
+    }
+})
+
+// Delete a climb
+app.delete("/delete-climb/:climbId", authenticateToken, async (req, res) => {
+    const climbId = req.params.climbId
+    const {user} = req.user
+
+    try {
+        const climb = await Climb.findOne({_id: climbId, userId:user._id})
+
+        if (!climb) {
+            return res.status(404).json({error: true, message: "Climb not found"})
+        }
+
+        await Climb.deleteOne({_id:climbId, userId: user._id})
+
+        return res.json({
+            error: false,
+            message:"Climb deleted successfully"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error:true,
+            message:"Internal Server Error"
+        })
+    }
 
 
 })

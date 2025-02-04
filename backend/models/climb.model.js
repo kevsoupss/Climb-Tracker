@@ -7,7 +7,6 @@ const climbSchema = new Schema({
     desc: {type: String, required: true},
     isStarred: {type: Boolean, required: false},
     userId: {type: String, required: true},
-    title: {type: String, required: true},
     link: {type: String, required: true},
     createdOn: {type: Date, default: new Date().getTime()},
     vlevel: {type: String, required: true}
