@@ -116,7 +116,7 @@ app.post("/login", async (req, res) => {
 
 // Add Climbs
 app.post("/add-climb", authenticateToken, async (req, res) => {
-    const { title, desc, link, vlevel} = req.body
+    const { title, desc, link, vlevel, isStarred} = req.body
     const { user } = req.user
 
     if(!title) {
@@ -135,12 +135,17 @@ app.post("/add-climb", authenticateToken, async (req, res) => {
         return res.status(400).json({error: true, message: "V level is required"})
     }
 
+    if(!isStarred) {
+        return res.status(400).json({error: true, message: "Starred is required"})
+    }
+
     try {
         const climb = new Climb({
             title,
             desc,
             link,
             vlevel,
+            isStarred,
             userId: user._id,
 
         })
@@ -168,7 +173,7 @@ app.put("/edit-climb/:climbId", authenticateToken, async (req, res) => {
     const { title, desc, link, vlevel, isStarred} = req.body
     const { user } = req.user
     
-    if(!title && !desc && !link && !vlevel) {
+    if(!title && !desc && !link && !vlevel && !typeof isStarred === "boolean") {
         return res.status(400).json({error: true, message:"No changes provided"})
     }
 
@@ -181,6 +186,7 @@ app.put("/edit-climb/:climbId", authenticateToken, async (req, res) => {
         if (desc) climb.desc = desc
         if (link) climb.link = link
         if (vlevel) climb.vlevel = vlevel
+        if (typeof isStarred === "boolean") climb.isStarred = isStarred
 
         await climb.save()
 
@@ -246,6 +252,40 @@ app.delete("/delete-climb/:climbId", authenticateToken, async (req, res) => {
         })
     }
 
+
+})
+
+// Update isStarred value
+app.put("/update-climb-starred/:climbId", authenticateToken, async (req, res) => {
+    const climbId = req.params.climbId
+    const { isStarred } = req.body
+    const { user } = req.user
+    
+    if(!typeof isStarred === "boolean") {
+        return res.status(400).json({error: true, message:"No changes provided"})
+    }
+
+    try {
+        const climb = await Climb.findOne({_id: climbId, userId : user._id})
+        if (!climb) {
+            return res.status(404).json({error: true, message: "Climb not found"})
+        }
+
+        climb.isStarred = isStarred
+
+        await climb.save()
+
+        return res.json({
+            error: false,
+            climb,
+            message:"Climb updated successfully"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Error"
+        })
+    }
 
 })
 
