@@ -5,10 +5,10 @@ import axiosInstance from "../../utils/axiosInstance"
 
 const AddEditClimbs = ({climbData, type, getAllClimbs, onClose}) => {
 
-  const [title, setTitle] = useState("")
-  const [desc, setDesc] = useState("")
-  const [vlevel, setVlevel] = useState("")
-  const [link, setLink] = useState("")
+  const [title, setTitle] = useState(climbData?.title || "")
+  const [desc, setDesc] = useState(climbData?.desc || "")
+  const [vlevel, setVlevel] = useState(climbData?.vlevel || "")
+  const [link, setLink] = useState(climbData?.link || "")
 
   const [error, setError] = useState(null)
 
@@ -32,7 +32,26 @@ const AddEditClimbs = ({climbData, type, getAllClimbs, onClose}) => {
     }
   }
 
-  const editClimb = async () => {}
+  const editClimb = async () => {
+    const climbId = climbData._id
+    try {
+      const response = await axiosInstance.put("/edit-climb/" + climbId, {
+        title,
+        desc,
+        vlevel,
+        link
+      })
+
+      if (response.data && response.data.climb) {
+        getAllClimbs()
+        onClose()
+      }
+    } catch( error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(error.response.data.message)
+      }
+    }
+  }
   
   const handleAddClimb = () => {
     if (!title) {
@@ -142,7 +161,7 @@ const AddEditClimbs = ({climbData, type, getAllClimbs, onClose}) => {
     <button 
       className="btn-primary font-medium mt-5 p-3" 
       onClick={handleAddClimb} >
-        ADD
+        {type === 'edit' ? 'UPDATE' : 'ADD'}
     </button>
 
     </div>

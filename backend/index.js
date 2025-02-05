@@ -136,7 +136,7 @@ app.get("/get-user", authenticateToken, async (req, res) => {
 
 // Add Climbs
 app.post("/add-climb", authenticateToken, async (req, res) => {
-    const { title, desc, link, vlevel, isStarred} = req.body
+    const { title, desc, link, vlevel} = req.body
     const { user } = req.user
 
     if(!title) {
@@ -155,9 +155,9 @@ app.post("/add-climb", authenticateToken, async (req, res) => {
         return res.status(400).json({error: true, message: "V level is required"})
     }
 
-    if(!isStarred) {
-        return res.status(400).json({error: true, message: "Starred is required"})
-    }
+    // if(!isStarred) {
+    //     return res.status(400).json({error: true, message: "Starred is required"})
+    // }
 
     try {
         const climb = new Climb({
@@ -165,7 +165,7 @@ app.post("/add-climb", authenticateToken, async (req, res) => {
             desc,
             link,
             vlevel,
-            isStarred,
+            //isStarred,
             userId: user._id,
 
         })
