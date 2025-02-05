@@ -2,11 +2,11 @@ import React from 'react'
 import {getInitials} from "../../utils/helper"
 
 
-const ProfileInfo = ({ onLogout}) => {
+const ProfileInfo = ({ userInfo, onLogout}) => {
   return (
     <div className="flex items-center gap-3">
         <div className="w-12 h-12 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-100 hover:bg-slate-200 transition">
-            {getInitials("Ray lOu")}
+            {getInitials(userInfo.fullName)}
         </div>
 
 

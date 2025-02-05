@@ -3,13 +3,13 @@ import ProfileInfo from '../Cards/ProfileInfo'
 import SearchBar from '../SearchBar/SearchBar'
 import { useNavigate } from "react-router-dom"
 
-const Navbar = (props) => {
+const Navbar = ({userInfo}) => {
   const navigate = useNavigate()
-  const [isLogin, setIsLogin] = useState(props.login)
+  //const [isLogin, setIsLogin] = useState(props.login)
   const [searchQuery, setSearchQuery] = useState("")
 
   const onLogout = () => {
-    setIsLogin(false)
+    localStorage.clear()
     navigate("/login")
   }
 
@@ -24,7 +24,7 @@ const Navbar = (props) => {
     <div className="bg-white flex  justify-between px-6 py-2 drop-shadow">
         <h2 className="text-xl font-medium text-black py-2">Climb Tracker</h2>
 
-      { isLogin ? <>
+      { userInfo ? <>
         <SearchBar 
         value={searchQuery}
         onChange={(event) => {
@@ -34,7 +34,7 @@ const Navbar = (props) => {
         onClearSearch={onClearSearch}
         /> 
       
-       <ProfileInfo onLogout={onLogout}/> 
+       <ProfileInfo userInfo = {userInfo} onLogout={onLogout}/> 
       </>
         
       : null
