@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import ClimbCard from '../../components/Cards/ClimbCard'
 import AddEditClimbs from './AddEditClimbs'
+import {format, formatISO} from "date-fns"
 import { MdAdd } from 'react-icons/md'
 import Modal from 'react-modal'
 import { useNavigate} from "react-router-dom"
@@ -63,18 +64,25 @@ const Home = () => {
       <Navbar userInfo={userInfo} login={true}/>
       <div className="container mx-auto">
         <div className="grid grid-cols-3 gap-4 mt-8">
-          <ClimbCard 
-            title="My Hardest Climb" 
-            date="22nd Jan 2025" 
-            desc="extremely difficult climb, many slopers"
-            vlevel="V4"
-            link="https://www.youtube.com/embed/ooFQ4OMFdSI"
-            isStarred={true}
-            onEdit={()=>{}}
-            onStar={()=>{}}
-            onDelete={()=>{}}
+          { allClimbs?.map((item, index) => {
+            console.log("?") 
+            return (
+            <ClimbCard 
+              key={item._id}
+              title={item.title}
+              date={format(item.createdOn, 'do MMM yyyy')}
+              desc={item.desc}
+              vlevel={item.vlevel}
+              link={item.link}
+              isStarred={item.isStarred}
+              onEdit={()=>{}}
+              onStar={()=>{}}
+              onDelete={()=>{}}
 
-          /> 
+            /> 
+            )           
+          }) || []}
+ 
           
         </div>
       </div>
