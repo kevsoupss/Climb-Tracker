@@ -16,6 +16,7 @@ const Home = () => {
   })
 
   const [userInfo, setUserInfo] = useState(null)
+  const [allClimbs, setAllClimbs] = useState(null)
 
   const navigate = useNavigate()
 
@@ -35,7 +36,22 @@ const Home = () => {
     }
   }
 
+  const getAllClimbs = async () => {
+    try {
+      const response = await axiosInstance.get("/get-all-climbs")
+
+      if (response.data && response.data.climb) {
+  
+        setAllClimbs(response.data.climb)
+      }
+    } catch( error) {
+      console.log("An unexpected error occured. Please try again.")
+    }
+  }
+
+
   useEffect(() => {
+    getAllClimbs()
     getUserInfo()
     return () => {
 
