@@ -1,7 +1,9 @@
 import React, {useState } from 'react'
 import {MdClose } from 'react-icons/md'
+import axiosInstance from "../../utils/axiosInstance"
 
-const AddEditClimbs = ({onClose}) => {
+
+const AddEditClimbs = ({climbData, type, getAllClimbs, onClose}) => {
 
   const [title, setTitle] = useState("")
   const [desc, setDesc] = useState("")
@@ -10,7 +12,25 @@ const AddEditClimbs = ({onClose}) => {
 
   const [error, setError] = useState(null)
 
-  const addNewClimb = async () => {}
+  const addNewClimb = async () => {
+    try {
+      const response = await axiosInstance.post("/add-climb", {
+        title,
+        desc,
+        vlevel,
+        link
+      })
+
+      if (response.data && response.data.climb) {
+        getAllClimbs()
+        onClose()
+      }
+    } catch( error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(error.response.data.message)
+      }
+    }
+  }
 
   const editClimb = async () => {}
   
@@ -41,24 +61,24 @@ const AddEditClimbs = ({onClose}) => {
     }
   }
   const vgrades = [
-      { value: 'v0', label: 'V0' },
-      { value: 'v1', label: 'V1' },
-      { value: 'v2', label: 'V2' },
-      { value: 'v3', label: 'V3' },
-      { value: 'v4', label: 'V4' },
-      { value: 'v5', label: 'V5' },
-      { value: 'v6', label: 'V6' },
-      { value: 'v7', label: 'V7' },
-      { value: 'v8', label: 'V8' },
-      { value: 'v9', label: 'V9' },
-      { value: 'v10', label: 'V10' },
-      { value: 'v11', label: 'V11' },
-      { value: 'v12', label: 'V12' },
-      { value: 'v13', label: 'V13' },
-      { value: 'v14', label: 'V14' },
-      { value: 'v15', label: 'V15' },
-      { value: 'v16', label: 'V16' },
-      { value: 'v17', label: 'V17' }
+      { value: 'V0', label: 'V0' },
+      { value: 'V1', label: 'V1' },
+      { value: 'V2', label: 'V2' },
+      { value: 'V3', label: 'V3' },
+      { value: 'V4', label: 'V4' },
+      { value: 'V5', label: 'V5' },
+      { value: 'V6', label: 'V6' },
+      { value: 'V7', label: 'V7' },
+      { value: 'V8', label: 'V8' },
+      { value: 'V9', label: 'V9' },
+      { value: 'V10', label: 'V10' },
+      { value: 'V11', label: 'V11' },
+      { value: 'V12', label: 'V12' },
+      { value: 'V13', label: 'V13' },
+      { value: 'V14', label: 'V14' },
+      { value: 'V15', label: 'V15' },
+      { value: 'V16', label: 'V16' },
+      { value: 'V17', label: 'V17' }
     ];
 
   return (

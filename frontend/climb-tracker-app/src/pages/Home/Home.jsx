@@ -21,6 +21,10 @@ const Home = () => {
 
   const navigate = useNavigate()
 
+  const handleEdit = (climbDetails) => {
+    setOpenAddEditModal({isShown: true, data: climbDetails, type: "edit"})
+  }
+
   const getUserInfo = async () => {
     try {
       const response = await axiosInstance.get("/get-user")
@@ -75,7 +79,7 @@ const Home = () => {
               vlevel={item.vlevel}
               link={item.link}
               isStarred={item.isStarred}
-              onEdit={()=>{}}
+              onEdit={()=>handleEdit(item)}
               onStar={()=>{}}
               onDelete={()=>{}}
 
@@ -106,7 +110,10 @@ const Home = () => {
         climbData = {openAddEditModal.data}
         onClose={() => {
           setOpenAddEditModal({ isShown: false, type:"add", data:null} )
-        }}/>
+        }}
+        getAllClimbs={getAllClimbs}
+        />
+        
       </ Modal>
       </>
   )
