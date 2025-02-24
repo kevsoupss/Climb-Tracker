@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import ClimbCard from '../../components/Cards/ClimbCard'
 import AddEditClimbs from './AddEditClimbs'
-import {format, formatISO} from "date-fns"
+import {format} from "date-fns"
 import { MdAdd } from 'react-icons/md'
 import Modal from 'react-modal'
 import { useNavigate} from "react-router-dom"
