@@ -310,7 +310,7 @@ app.put("/update-climb-starred/:climbId", authenticateToken, async (req, res) =>
 })
 
 // Search climbs
-app.post("/search-climb", authenticateToken, async (req, res) => {
+app.get("/search-climb", authenticateToken, async (req, res) => {
     const { user } = req.user
     const { query } = req.query
 

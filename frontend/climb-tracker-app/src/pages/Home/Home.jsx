@@ -70,6 +70,42 @@ const Home = () => {
     }
   }
 
+  const onSearchClimb = async(query) => {
+    try {
+      const response = await axiosInstance.get("/search-climb", {
+        params: {query}
+      })
+      
+      if (response.data && response.data.climb) {
+        setIsSearch(true);
+        setAllClimbs(response.data.climb)
+      }
+    } catch( error) {
+      console.log(error)
+    }
+  }
+
+  const updateIsStarred = async(climbdata) => {
+    const climbId = climbdata._id
+    try {
+      const response = await axiosInstance.put("/update-climb-starred/" + climbId, {
+        "isStarred": !climbdata.isStarred
+      })
+
+      if (response.data && response.data.climb) {
+        getAllClimbs()
+      } 
+    } catch( error) {
+      console.log(error)
+    }
+
+  }
+
+  const handleClearSearch = () =>{
+    setIsSearch(false)
+    getAllClimbs()
+  }
+
   useEffect(() => {
     getAllClimbs()
     getUserInfo()
@@ -80,7 +116,7 @@ const Home = () => {
 
   return (
     <>
-      <Navbar userInfo={userInfo} login={true}/>
+      <Navbar userInfo={userInfo} login={true} onSearchClimb={onSearchClimb} handleClearSearch={handleClearSearch}/>
       <div className="container mx-auto">
         <div className="grid grid-cols-3 gap-4 mt-8">
           { allClimbs?.map((item, index) => {
@@ -95,7 +131,7 @@ const Home = () => {
               link={item.link}
               isStarred={item.isStarred}
               onEdit={()=>handleEdit(item)}
-              onStar={()=>{}}
+              onStar={()=>updateIsStarred(item)}
               onDelete={()=>deleteClimb(item)}
 
             /> 
