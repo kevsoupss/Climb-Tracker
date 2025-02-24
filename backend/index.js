@@ -309,6 +309,44 @@ app.put("/update-climb-starred/:climbId", authenticateToken, async (req, res) =>
 
 })
 
+// Search climbs
+app.post("/search-climb", authenticateToken, async (req, res) => {
+    const { user } = req.user
+    const { query } = req.query
+
+    if (!query) {
+        return res
+        .status(400)
+        .json({error:true, message: "Search query is required"})
+
+    }
+
+    try {
+        const climbs = await Climb.find({
+            userId: user._id,
+            $or: [
+                {title: {$regex: new RegExp(query, "i")}},
+                {desc: {$regex: new RegExp(query, "i")}}, 
+                {vlevel: {$regex: new RegExp(query, "i")}}
+
+            ]
+        })
+
+        return res.json({
+            error: false,
+            climb: climbs,
+            message: "Climbs matching search query retrieved"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Error"
+        })
+    }
+
+
+})
+
 app.listen(8000)
 
 module.exports = app

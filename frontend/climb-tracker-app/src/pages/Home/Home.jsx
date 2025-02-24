@@ -19,6 +19,8 @@ const Home = () => {
   const [userInfo, setUserInfo] = useState(null)
   const [allClimbs, setAllClimbs] = useState(null)
 
+  const [isSearch, setIsSearch] = useState(false)
+
   const navigate = useNavigate()
 
   const handleEdit = (climbDetails) => {
@@ -54,6 +56,19 @@ const Home = () => {
     }
   }
 
+  const deleteClimb = async (data) => {
+    const climbId = data._id
+    try {
+      const response = await axiosInstance.delete("/delete-climb/" + climbId)
+      if (response.data && !response.data.error) {
+        getAllClimbs()
+      }
+    } catch( error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        console.log("Unexpected error occured.")
+      }
+    }
+  }
 
   useEffect(() => {
     getAllClimbs()
@@ -81,7 +96,7 @@ const Home = () => {
               isStarred={item.isStarred}
               onEdit={()=>handleEdit(item)}
               onStar={()=>{}}
-              onDelete={()=>{}}
+              onDelete={()=>deleteClimb(item)}
 
             /> 
             )           
@@ -95,6 +110,7 @@ const Home = () => {
       }}>
         <MdAdd className="text-[32px] text-white"/>
       </button>
+
       <Modal
         isOpen={openAddEditModal.isShown}
         onRequestClose={() => {}}
@@ -105,6 +121,7 @@ const Home = () => {
         }}
         contentLabel=""
         className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 ">
+
       <AddEditClimbs 
         type={openAddEditModal.type}
         climbData = {openAddEditModal.data}
